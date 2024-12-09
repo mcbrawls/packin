@@ -1,0 +1,22 @@
+{
+    "schemaVersion": 1,
+
+    "id": "packin-test",
+    "version": "1.0.0",
+
+    "name": "Packin (Test)",
+    "environment": "*",
+
+    "entrypoints": {
+        "main": [
+            {
+                "value": "net.mcbrawls.packin.test.PackinTest",
+                "adapter": "kotlin"
+            }
+        ]
+    },
+
+    "depends": {
+        "packin": "*"
+    }
+}

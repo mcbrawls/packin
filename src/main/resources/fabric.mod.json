@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+
+	"id": "packin",
+	"version": "${version}",
+
+	"name": "Packin",
+	"description": "A library for creating server-side resource packs.",
+
+	"authors": [
+		"Andante"
+	],
+	"contact": {
+		"sources": "https://github.com/mcbrawls/packin"
+	},
+
+	"license": "MIT",
+	"icon": "assets/packin/icon.png",
+
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "net.mcbrawls.packin.PackinMod",
+				"adapter": "kotlin"
+			}
+		]
+	},
+
+	"mixins": [
+		"packin.mixins.json"
+	],
+	"accessWidener": "packin.accesswidener",
+
+	"depends": {
+		"fabricloader": ">=0.16.7",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
+	}
+}
