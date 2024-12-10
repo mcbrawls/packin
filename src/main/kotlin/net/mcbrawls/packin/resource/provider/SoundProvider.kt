@@ -7,6 +7,9 @@ import net.mcbrawls.packin.resource.pack.PackinResourcePack
 import net.mcbrawls.packin.resource.pack.ResourceCollector
 import net.minecraft.util.Identifier
 
+/**
+ * A resource provider to add custom sounds.
+ */
 class SoundProvider(
     /**
      * The sound ids to register.
@@ -74,10 +77,12 @@ class SoundProvider(
         }
     }
 
-    /**
-     * Creates the file path of the given sound id.
-     */
-    fun createSoundPath(id: Identifier): Identifier {
-        return id.withPath { "sounds/$it.ogg" }
+    companion object {
+        /**
+         * Creates the file path of the given sound id.
+         */
+        fun createSoundPath(id: Identifier): Identifier {
+            return id.withPath { "sounds/$it.ogg" }
+        }
     }
 }

@@ -9,6 +9,10 @@ import net.mcbrawls.packin.resource.pack.PackinResourcePack
 import net.mcbrawls.packin.resource.pack.ResourceCollector
 import net.minecraft.util.Identifier
 
+// TODO: add support for a list of shifts
+/**
+ * A resource provider to add a font.
+ */
 class FontProvider(
     fontId: Identifier,
     val size: Float,

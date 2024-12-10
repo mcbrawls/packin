@@ -14,6 +14,7 @@ import net.mcbrawls.packin.resource.pack.PackMetadata
 import net.mcbrawls.packin.resource.pack.PackinResourcePack
 import net.mcbrawls.packin.resource.provider.FontProvider
 import net.mcbrawls.packin.resource.provider.SoundProvider
+import net.mcbrawls.packin.resource.provider.VanillaSoundRemovalProvider
 import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.server.command.CommandManager
 import net.minecraft.text.Text
@@ -47,7 +48,14 @@ object PackinTest : ModInitializer {
                                     SoundProvider(
                                         Identifier.of("brawls", "global/action_success"),
                                         Identifier.of("brawls", "global/doesnt_exist"),
+                                        Identifier.of("brawls", "unimplemented"),
                                         unimplementedSound = Identifier.of("brawls", "unimplemented")
+                                    )
+                                )
+
+                                addProvider(
+                                    VanillaSoundRemovalProvider(
+                                        "block.lava.pop"
                                     )
                                 )
                             }.createZip()
