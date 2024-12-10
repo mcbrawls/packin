@@ -6,6 +6,7 @@ import net.mcbrawls.packin.PackinMod.addProperty
 import net.mcbrawls.packin.listener.PackinResourceLoader
 import net.mcbrawls.packin.resource.PackResource
 import net.mcbrawls.packin.resource.pack.PackinResourcePack
+import net.mcbrawls.packin.resource.pack.ResourceCollector
 import net.minecraft.util.Identifier
 
 class FontProvider(

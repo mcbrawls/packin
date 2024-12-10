@@ -13,6 +13,7 @@ import net.mcbrawls.packin.font.FontMetrics.Companion.minecraftWidth
 import net.mcbrawls.packin.resource.pack.PackMetadata
 import net.mcbrawls.packin.resource.pack.PackinResourcePack
 import net.mcbrawls.packin.resource.provider.FontProvider
+import net.mcbrawls.packin.resource.provider.SoundProvider
 import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.server.command.CommandManager
 import net.minecraft.text.Text
@@ -36,13 +37,23 @@ object PackinTest : ModInitializer {
             dispatcher.register(
                 CommandManager.literal("out")
                     .executes { context ->
-                        val packBytes = PackinResourcePack.create(PackMetadata("Test", Text.literal("Test"))) {
-                            addProvider(FontProvider(Identifier.of("brawls", "pinch"), 7.0f, 4.0f))
-                            addProvider(FontProvider(Identifier.of("brawls", "love_bug"), 9.0f, 8.0f))
-                            addProvider(FontProvider(Identifier.of("brawls", "chocolate"), 11.0f, 8.0f))
-                        }.createZip()
-                        val path = Path("out.zip")
-                        path.writeBytes(packBytes)
+                        runCatching {
+                            val packBytes = PackinResourcePack.create(PackMetadata("Test", Text.literal("Test"))) {
+                                addProvider(FontProvider(Identifier.of("brawls", "pinch"), 7.0f, 4.0f))
+                                addProvider(FontProvider(Identifier.of("brawls", "love_bug"), 9.0f, 8.0f))
+                                addProvider(FontProvider(Identifier.of("brawls", "chocolate"), 11.0f, 8.0f))
+
+                                addProvider(
+                                    SoundProvider(
+                                        Identifier.of("brawls", "global/action_success"),
+                                        Identifier.of("brawls", "global/doesnt_exist"),
+                                        unimplementedSound = Identifier.of("brawls", "unimplemented")
+                                    )
+                                )
+                            }.createZip()
+                            val path = Path("out.zip")
+                            path.writeBytes(packBytes)
+                        }.exceptionOrNull()?.printStackTrace()
                         1
                     }
             )

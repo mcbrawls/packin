@@ -1,8 +1,11 @@
-package net.mcbrawls.packin.resource.provider
+package net.mcbrawls.packin.resource.pack
 
 import net.mcbrawls.packin.resource.PackResource
 import net.minecraft.util.Identifier
 
+/**
+ * Collects resources for a pack.
+ */
 fun interface ResourceCollector {
     /**
      * Collect an existing resource.
