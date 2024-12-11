@@ -1,5 +1,6 @@
 package net.mcbrawls.packin.resource.pack
 
+import net.mcbrawls.packin.listener.PackinResourceLoader
 import net.mcbrawls.packin.resource.PackResource
 import net.minecraft.util.Identifier
 
@@ -24,5 +25,13 @@ fun interface ResourceCollector {
      */
     fun collect(location: Identifier, resource: PackResource) {
         collect(location, resource.bytes)
+    }
+
+    /**
+     * Collect an existing resource from its identifier.
+     */
+    fun tryCollect(location: Identifier) {
+        val resource = PackinResourceLoader[location]
+        resource?.also(::collect)
     }
 }

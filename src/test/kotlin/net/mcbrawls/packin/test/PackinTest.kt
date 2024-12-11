@@ -16,8 +16,10 @@ import net.mcbrawls.packin.resource.pack.PackinResourcePack
 import net.mcbrawls.packin.resource.provider.DirectResourceProvider
 import net.mcbrawls.packin.resource.provider.FontProvider
 import net.mcbrawls.packin.resource.provider.LanguageProvider
+import net.mcbrawls.packin.resource.provider.ModelTextureProvider
 import net.mcbrawls.packin.resource.provider.SoundProvider
 import net.mcbrawls.packin.resource.provider.VanillaSoundRemovalProvider
+import net.mcbrawls.packin.resource.provider.template.TemplateTextProvider
 import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.server.command.CommandManager
 import net.minecraft.text.Text
@@ -83,7 +85,15 @@ object PackinTest : ModInitializer {
 
                                 addProvider(DirectResourceProvider("packin-test:brawls", Identifier.DEFAULT_NAMESPACE, "textures/"))
                                 addProvider(DirectResourceProvider(Identifier.ofVanilla("models/item/template_skull.json")))
-                                // addProvider(PackResourceProvider(packId = "packin-test:mcc"))
+                                addProvider(DirectResourceProvider(packId = "packin-test:twemoji"))
+                                // addProvider(DirectResourceProvider(packId = "packin-test:mcc"))
+
+                                addProvider(ModelTextureProvider(Identifier.of("brawls", "item/arcade_machine")))
+                                addProvider(DirectResourceProvider("brawls", "models/"))
+
+                                addProvider(TemplateTextProvider(Identifier.ofVanilla("shaders/core/rendertype_text.vsh")) {
+                                    replace("r_xp", 0.0f)
+                                })
                             }.createZip()
                             val path = Path("out.zip")
                             path.writeBytes(packBytes)
