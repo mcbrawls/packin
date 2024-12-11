@@ -10,9 +10,12 @@ import net.fabricmc.loader.api.FabricLoader
 import net.mcbrawls.packin.font.FontMetrics
 import net.mcbrawls.packin.font.FontMetrics.Companion.minecraftHeight
 import net.mcbrawls.packin.font.FontMetrics.Companion.minecraftWidth
+import net.mcbrawls.packin.lang.LanguageList
 import net.mcbrawls.packin.resource.pack.PackMetadata
 import net.mcbrawls.packin.resource.pack.PackinResourcePack
+import net.mcbrawls.packin.resource.provider.DirectResourceProvider
 import net.mcbrawls.packin.resource.provider.FontProvider
+import net.mcbrawls.packin.resource.provider.LanguageProvider
 import net.mcbrawls.packin.resource.provider.SoundProvider
 import net.mcbrawls.packin.resource.provider.VanillaSoundRemovalProvider
 import net.minecraft.command.argument.IdentifierArgumentType
@@ -21,6 +24,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import kotlin.io.path.Path
 import kotlin.io.path.writeBytes
+import kotlin.math.floor
 import kotlin.math.round
 
 object PackinTest : ModInitializer {
@@ -58,9 +62,32 @@ object PackinTest : ModInitializer {
                                         "block.lava.pop"
                                     )
                                 )
+
+                                LanguageList.forEachLanguage { code ->
+                                    addProvider(
+                                        LanguageProvider(Identifier.ofVanilla(code)) {
+                                            LanguageList.forEachContainer { key ->
+                                                this[key] = ""
+                                            }
+
+                                            this["effect.minecraft.hunger"] = "MC Brawls"
+                                        }
+                                    )
+                                }
+
+                                addProvider(
+                                    LanguageProvider(Identifier.of("brawls", "en_us")) {
+                                        this["item.brawls.rocket_launcher"] = "Rocket Launcher"
+                                    }
+                                )
+
+                                addProvider(DirectResourceProvider("packin-test:brawls", Identifier.DEFAULT_NAMESPACE, "textures/"))
+                                addProvider(DirectResourceProvider(Identifier.ofVanilla("models/item/template_skull.json")))
+                                // addProvider(PackResourceProvider(packId = "packin-test:mcc"))
                             }.createZip()
                             val path = Path("out.zip")
                             path.writeBytes(packBytes)
+                            context.source.sendFeedback({ Text.literal("Output pack: ~${floor(packBytes.size / 1024.0).toInt()}KB") }, true)
                         }.exceptionOrNull()?.printStackTrace()
                         1
                     }

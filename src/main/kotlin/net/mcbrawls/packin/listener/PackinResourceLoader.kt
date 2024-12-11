@@ -10,9 +10,16 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
+/**
+ * Loads Packin source files from Minecraft resources.
+ */
 object PackinResourceLoader : SimpleResourceReloadListener<List<SourcePackResource>> {
-    val LISTENER_ID: Identifier = Identifier.of(PackinMod.MOD_ID, "resources")
     val LOGGER: Logger = LoggerFactory.getLogger("PackinResourceLoader")
+
+    /**
+     * The unique identfiier of this reload listener.
+     */
+    val LISTENER_ID: Identifier = Identifier.of(PackinMod.MOD_ID, "resources")
 
     const val ROOT_PATH: String = "packin_resources"
 
@@ -73,6 +80,19 @@ object PackinResourceLoader : SimpleResourceReloadListener<List<SourcePackResour
     operator fun get(pack: String, id: Identifier): PackResource? {
         val resources = resourcesByPack[pack] ?: return null
         return resources.firstOrNull { resource -> resource.path == id }
+    }
+
+    /**
+     * Gets all loaded resources for the given pack id and filter.
+     */
+    fun getAll(pack: String?, filter: (Identifier) -> Boolean = { true }): Set<PackResource> {
+        val resources = if (pack == null) {
+            resources.toSet()
+        } else {
+            resourcesByPack[pack] ?: return emptySet()
+        }
+
+        return resources.filter { filter(it.path) }.toSet()
     }
 
     override fun getFabricId(): Identifier {
