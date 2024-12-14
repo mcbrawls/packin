@@ -8,15 +8,16 @@ import net.mcbrawls.packin.resource.PackResource
 import net.mcbrawls.packin.resource.pack.PackinResourcePack
 import net.mcbrawls.packin.resource.pack.ResourceCollector
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.Vec2f
 
-// TODO: add support for a list of shifts
 /**
  * A resource provider to add a font.
  */
 class FontProvider(
-    fontId: Identifier,
+    val fontId: Identifier,
     val size: Float,
     val oversample: Float,
+    vararg val shifts: Vec2f,
 ) : ResourceProvider {
     /**
      * The file path of the font JSON file.
@@ -45,12 +46,19 @@ class FontProvider(
 
         val json = createJson()
         collector.collect(fontJsonPath, json.toString().encodeToByteArray())
+
+        shifts.forEach { shift ->
+            val shiftedJson = createJson(shift)
+            val shiftedFontId = createShiftedFontId(fontId, shift)
+            val shiftedFontJsonPath = shiftedFontId.withPath { "font/$it.json" }
+            collector.collect(shiftedFontJsonPath, shiftedJson.toString().encodeToByteArray())
+        }
     }
 
     /**
      * Creates the font JSON file as an object.
      */
-    fun createJson(): JsonObject {
+    fun createJson(shift: Vec2f? = null): JsonObject {
         return JsonObject().apply {
             add("providers", JsonArray().apply {
                 add(JsonObject().apply {
@@ -58,8 +66,25 @@ class FontProvider(
                     addProperty("file", fontFilePathInJson)
                     addProperty("size", size)
                     addProperty("oversample", oversample)
+
+                    shift?.also { shift ->
+                        add(
+                            "shift",
+                            JsonArray().apply {
+                                add(shift.x)
+                                add(shift.y)
+                            }
+                        )
+                    }
                 })
             })
+        }
+    }
+
+    companion object {
+        fun createShiftedFontId(fontId: Identifier, shift: Vec2f): Identifier {
+            val shiftString = "${shift.x}_${shift.y}"
+            return fontId.withPath { "${it}_shift_$shiftString" }
         }
     }
 }

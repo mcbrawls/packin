@@ -24,6 +24,7 @@ import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.server.command.CommandManager
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.Vec2f
 import kotlin.io.path.Path
 import kotlin.io.path.writeBytes
 import kotlin.math.floor
@@ -48,7 +49,7 @@ object PackinTest : ModInitializer {
                             val packBytes = PackinResourcePack.create(PackMetadata("Test", Text.literal("Test"))) {
                                 addProvider(FontProvider(Identifier.of("brawls", "pinch"), 7.0f, 4.0f))
                                 addProvider(FontProvider(Identifier.of("brawls", "love_bug"), 9.0f, 8.0f))
-                                addProvider(FontProvider(Identifier.of("brawls", "chocolate"), 11.0f, 8.0f))
+                                addProvider(FontProvider(Identifier.of("brawls", "chocolate"), 11.0f, 8.0f, Vec2f(0.0f, 1.0f)))
 
                                 addProvider(
                                     SoundProvider(
