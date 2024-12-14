@@ -10,6 +10,8 @@ import net.fabricmc.loader.api.FabricLoader
 import net.mcbrawls.packin.font.FontMetrics
 import net.mcbrawls.packin.font.FontMetrics.Companion.minecraftHeight
 import net.mcbrawls.packin.font.FontMetrics.Companion.minecraftWidth
+import net.mcbrawls.packin.font.shift.FontShiftHandler
+import net.mcbrawls.packin.font.shift.range.PrecisionShiftRange
 import net.mcbrawls.packin.lang.LanguageList
 import net.mcbrawls.packin.resource.pack.PackMetadata
 import net.mcbrawls.packin.resource.pack.PackinResourcePack
@@ -24,7 +26,6 @@ import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.server.command.CommandManager
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.Vec2f
 import kotlin.io.path.Path
 import kotlin.io.path.writeBytes
 import kotlin.math.floor
@@ -47,9 +48,16 @@ object PackinTest : ModInitializer {
                     .executes { context ->
                         runCatching {
                             val packBytes = PackinResourcePack.create(PackMetadata("Test", Text.literal("Test"))) {
-                                addProvider(FontProvider(Identifier.of("brawls", "pinch"), 7.0f, 4.0f))
+                                val pinchFontId = Identifier.of("brawls", "pinch")
+                                val handler = FontShiftHandler.createVertical(pinchFontId, PrecisionShiftRange(0..2, 0.5f), PrecisionShiftRange(4..6, 0.25f))
+                                addProvider(FontProvider(pinchFontId, 7.0f, 4.0f, handler))
+
+                                setOf(0.0f, 0.2f, 0.5f, 0.8f, 1.0f, 3.0f, 3.75f, 2.0f, 10.0f).forEach {
+                                    println("$it - ${handler[it]}")
+                                }
+
                                 addProvider(FontProvider(Identifier.of("brawls", "love_bug"), 9.0f, 8.0f))
-                                addProvider(FontProvider(Identifier.of("brawls", "chocolate"), 11.0f, 8.0f, Vec2f(0.0f, 1.0f)))
+                                addProvider(FontProvider(Identifier.of("brawls", "chocolate"), 11.0f, 8.0f))
 
                                 addProvider(
                                     SoundProvider(
