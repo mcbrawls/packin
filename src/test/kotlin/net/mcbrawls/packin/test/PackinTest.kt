@@ -92,7 +92,7 @@ object PackinTest : ModInitializer {
                                     }
                                 )
 
-                                addProvider(DirectResourceProvider("packin-test:brawls", Identifier.DEFAULT_NAMESPACE, "textures/"))
+                                addProvider(DirectResourceProvider(Identifier.DEFAULT_NAMESPACE, "textures/", packId = "packin-test:brawls"))
                                 addProvider(DirectResourceProvider(Identifier.ofVanilla("models/item/template_skull.json")))
                                 addProvider(DirectResourceProvider(packId = "packin-test:twemoji"))
                                 // addProvider(DirectResourceProvider(packId = "packin-test:mcc"))
