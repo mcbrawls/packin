@@ -3,6 +3,7 @@ package net.mcbrawls.packin.resource.provider
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import net.mcbrawls.packin.PackinMod.addProperty
+import net.mcbrawls.packin.font.FontMetrics
 import net.mcbrawls.packin.font.shift.FontShiftHandler
 import net.mcbrawls.packin.listener.PackinResourceLoader
 import net.mcbrawls.packin.resource.PackResource
@@ -42,6 +43,8 @@ class FontProvider(
      * Returns the loaded resource of the font.
      */
     val fontResource: PackResource? get() = PackinResourceLoader[fontFilePath]
+
+    val metrics: FontMetrics by lazy { FontMetrics(fontId, size) }
 
     override fun collectResources(pack: PackinResourcePack, collector: ResourceCollector) {
         fontResource?.also { fontResource ->
