@@ -94,6 +94,10 @@ class FontProvider(
 
     companion object {
         fun createShiftedFontId(fontId: Identifier, shift: Vector2f): Identifier {
+            if (shift.x == 0.0f && shift.y == 0.0f) {
+                return fontId
+            }
+
             val shiftString = "${shift.x}_${shift.y}"
             return fontId.withPath { "${it}_shift_$shiftString" }
         }

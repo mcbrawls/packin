@@ -16,7 +16,7 @@ class VerticalFontShiftHandler(
 
     val shifts: SortedSet<Float> = ranges.flatMap(ShiftRange::collectShifts).toSortedSet()
 
-    override val shiftVectors: Set<Vector2f> = shifts.map { Vector2f(0.0f, it) }.toSet()
+    override val shiftVectors: Set<Vector2f> = shifts.map { Vector2f(0.0f, it) }.toSet() + Vector2f()
 
     operator fun get(shift: Float): Identifier {
         return this[Vector2f(0.0f, shift)]
