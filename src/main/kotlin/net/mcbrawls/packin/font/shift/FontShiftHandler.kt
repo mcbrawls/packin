@@ -13,6 +13,10 @@ interface FontShiftHandler {
     val shiftVectors: Set<Vector2f>
 
     operator fun get(shift: Vector2f = Vector2f()): Identifier {
+        if (shift.x == 0.0f && shift.y == 0.0f) {
+            return fontId
+        }
+
         val closest = getClosest(shift)
         return FontProvider.createShiftedFontId(fontId, closest)
     }
