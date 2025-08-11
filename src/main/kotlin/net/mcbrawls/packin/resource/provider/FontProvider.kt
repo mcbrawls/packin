@@ -9,6 +9,7 @@ import net.mcbrawls.packin.listener.PackinResourceLoader
 import net.mcbrawls.packin.resource.PackResource
 import net.mcbrawls.packin.resource.pack.PackinResourcePack
 import net.mcbrawls.packin.resource.pack.ResourceCollector
+import net.minecraft.text.StyleSpriteSource
 import net.minecraft.util.Identifier
 import org.joml.Vector2f
 
@@ -45,6 +46,8 @@ class FontProvider(
     val fontResource: PackResource? get() = PackinResourceLoader[fontFilePath]
 
     val metrics: FontMetrics by lazy { FontMetrics(fontId, size) }
+
+    val spriteSource: StyleSpriteSource by lazy { StyleSpriteSource.Font(fontId) }
 
     override fun collectResources(pack: PackinResourcePack, collector: ResourceCollector) {
         fontResource?.also { fontResource ->

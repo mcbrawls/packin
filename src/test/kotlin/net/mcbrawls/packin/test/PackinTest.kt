@@ -24,6 +24,7 @@ import net.mcbrawls.packin.resource.provider.VanillaSoundRemovalProvider
 import net.mcbrawls.packin.resource.provider.template.TemplateTextProvider
 import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.server.command.CommandManager
+import net.minecraft.text.StyleSpriteSource
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import kotlin.io.path.Path
@@ -134,7 +135,7 @@ object PackinTest : ModInitializer {
                                                     Text.empty()
                                                         .append(Text.literal("$fontId@$size: $width, $height"))
                                                         .append("\n")
-                                                        .append(Text.literal(string).styled { it.withFont(fontId) })
+                                                        .append(Text.literal(string).styled { it.withFont(StyleSpriteSource.Font(fontId)) })
                                                         .append("\n")
                                                         .append(Text.literal(".".repeat(round(width / 2.0).toInt())))
                                                 }, false)

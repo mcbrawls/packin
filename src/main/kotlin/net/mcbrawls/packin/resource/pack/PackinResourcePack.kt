@@ -35,10 +35,10 @@ class PackinResourcePack(
     }
 
     fun createZip(): ByteArray {
-        val packFormat = MinecraftVersion.create().packVersion(ResourceType.CLIENT_RESOURCES)
+        val packVersion = MinecraftVersion.create().packVersion(ResourceType.CLIENT_RESOURCES)
 
         val resources = collectResources()
-        val mcmetaJson = metadata.createJson(packFormat)
+        val mcmetaJson = metadata.createJson(packVersion)
         val packIcon = readServerIcon()
 
         val pack = buildMap {
