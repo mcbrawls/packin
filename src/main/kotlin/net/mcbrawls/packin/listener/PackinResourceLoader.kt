@@ -1,19 +1,17 @@
 package net.mcbrawls.packin.listener
 
-import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener
+import net.fabricmc.fabric.api.resource.v1.reloader.SimpleResourceReloader
 import net.mcbrawls.packin.PackinMod
 import net.mcbrawls.packin.resource.PackResource
-import net.minecraft.resource.ResourceManager
+import net.minecraft.resource.ResourceReloader
 import net.minecraft.util.Identifier
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
 
 /**
  * Loads Packin source files from Minecraft resources.
  */
-object PackinResourceLoader : SimpleResourceReloadListener<List<SourcePackResource>> {
+object PackinResourceLoader : SimpleResourceReloader<List<SourcePackResource>>() {
     val LOGGER: Logger = LoggerFactory.getLogger("PackinResourceLoader")
 
     /**
@@ -27,32 +25,24 @@ object PackinResourceLoader : SimpleResourceReloadListener<List<SourcePackResour
     private val resources: MutableList<PackResource> = mutableListOf()
     private val resourcesByPack: MutableMap<String, List<PackResource>> = mutableMapOf()
 
-    override fun load(
-        manager: ResourceManager,
-        executor: Executor,
-    ): CompletableFuture<List<SourcePackResource>> {
-        return CompletableFuture.supplyAsync {
-            val resources = manager.findAllResources(ROOT_PATH) { true }
-            resources.flatMap { (rawId, resources) ->
-                resources.map { resource ->
-                    val bytes = resource.inputStream.readBytes()
-                    val id = rawId.withPath { it.removePrefix("$ROOT_PATH/") }
-                    SourcePackResource(resource.packId, PackResource(id, bytes))
-                }
+    override fun prepare(store: ResourceReloader.Store): List<SourcePackResource> {
+        val manager = store.resourceManager
+        val resources = manager.findAllResources(ROOT_PATH) { true }
+        return resources.flatMap { (rawId, resources) ->
+            resources.map { resource ->
+                val bytes = resource.inputStream.readBytes()
+                val id = rawId.withPath { it.removePrefix("$ROOT_PATH/") }
+                SourcePackResource(resource.packId, PackResource(id, bytes))
             }
         }
     }
 
-    override fun apply(
-        loadedResources: List<SourcePackResource>,
-        manager: ResourceManager,
-        executor: Executor,
-    ): CompletableFuture<Void> {
+    override fun apply(prepared: List<SourcePackResource>, store: ResourceReloader.Store) {
         sourceResources.clear()
-        sourceResources.addAll(loadedResources)
+        sourceResources.addAll(prepared)
 
         resources.clear()
-        resources.addAll(loadedResources.map(SourcePackResource::resource))
+        resources.addAll(prepared.map(SourcePackResource::resource))
 
         resourcesByPack.clear()
         resourcesByPack.putAll(
@@ -61,10 +51,8 @@ object PackinResourceLoader : SimpleResourceReloadListener<List<SourcePackResour
                 .mapValues { (_, resources) -> resources.map(SourcePackResource::resource) }
         )
 
-        val resourceCount = loadedResources.size
+        val resourceCount = prepared.size
         LOGGER.info("Loaded $resourceCount Packin resources")
-
-        return CompletableFuture.completedFuture(null)
     }
 
     /**
@@ -93,9 +81,5 @@ object PackinResourceLoader : SimpleResourceReloadListener<List<SourcePackResour
         }
 
         return resources.filter { filter(it.path) }.toSet()
-    }
-
-    override fun getFabricId(): Identifier {
-        return LISTENER_ID
     }
 }
