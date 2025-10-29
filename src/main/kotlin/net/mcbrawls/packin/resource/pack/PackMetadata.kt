@@ -1,5 +1,6 @@
 package net.mcbrawls.packin.resource.pack
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
 import net.minecraft.resource.PackVersion
@@ -19,6 +20,11 @@ data class PackMetadata(
 
         return JsonObject().apply {
             add("pack", JsonObject().apply {
+                addProperty("pack_format", version.major)
+                add("supported_formats", JsonArray().apply {
+                    add(0)
+                    add(version.major)
+                })
                 add("description", descriptionJson)
             })
         }
