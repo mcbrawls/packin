@@ -19,7 +19,6 @@ data class PackMetadata(
 
         return JsonObject().apply {
             add("pack", JsonObject().apply {
-                addProperty("pack_format", "${version.major}.${version.minor}")
                 add("description", descriptionJson)
             })
         }
