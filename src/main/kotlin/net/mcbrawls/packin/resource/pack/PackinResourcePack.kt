@@ -16,6 +16,7 @@ class PackinResourcePack(
     val metadata: PackMetadata,
 ) {
     val providers: MutableSet<ResourceProvider> = mutableSetOf()
+    val overlays: MutableList<PackOverlay> = mutableListOf()
 
     /**
      * Adds a provider to this pack for compilation.
@@ -23,6 +24,12 @@ class PackinResourcePack(
      */
     fun addProvider(provider: ResourceProvider): Boolean {
         return providers.add(provider)
+    }
+
+    fun addOverlay(name: String, formatMin: Int, formatMax: Int, builder: PackOverlay.() -> Unit): PackOverlay {
+        val overlay = PackOverlay(name, formatMin, formatMax).apply(builder)
+        overlays.add(overlay)
+        return overlay
     }
 
     fun collectResources(): Set<PackResource> {
@@ -38,19 +45,17 @@ class PackinResourcePack(
         val packVersion = MinecraftVersion.create().packVersion(ResourceType.CLIENT_RESOURCES)
 
         val resources = collectResources()
-        val mcmetaJson = metadata.createJson(packVersion)
+        val mcmetaJson = metadata.createJson(packVersion, overlays)
         val packIcon = readServerIcon()
 
         val pack = buildMap {
-            putAll(
-                resources.associate { resource ->
-                    val fullPath = resource.path
-                    val namespace = fullPath.namespace
-                    val path = fullPath.path
+            putAll(resources.associate { "assets/${it.path.namespace}/${it.path.path}" to it.bytes })
 
-                    "assets/$namespace/$path" to resource.bytes
+            overlays.forEach { overlay ->
+                overlay.collectResources(this@PackinResourcePack).forEach { resource ->
+                    this["${overlay.name}/assets/${resource.path.namespace}/${resource.path.path}"] = resource.bytes
                 }
-            )
+            }
 
             this["pack.mcmeta"] = mcmetaJson.toString().encodeToByteArray()
             packIcon?.also { this["pack.png"] = it }

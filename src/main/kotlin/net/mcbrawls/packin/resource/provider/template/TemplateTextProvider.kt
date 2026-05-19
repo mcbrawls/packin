@@ -11,20 +11,27 @@ import net.minecraft.util.Identifier
  */
 class TemplateTextProvider(
     /**
-     * The file to be filtered.
+     * The source file to read.
      */
     val filePath: Identifier,
+
+    /**
+     * The output location; defaults to filePath.
+     */
+    val outputPath: Identifier,
 
     /**
      * The filter to apply.
      */
     val filter: TemplateFilter.() -> Unit,
 ) : ResourceProvider {
+    constructor(filePath: Identifier, filter: TemplateFilter.() -> Unit) : this(filePath, filePath, filter)
+
     override fun collectResources(pack: PackinResourcePack, collector: ResourceCollector) {
         val resource = PackinResourceLoader[filePath] ?: return
         val string = resource.bytes.decodeToString()
         val filter = TemplateFilter(string).apply(filter)
         val output = filter.getOutput()
-        collector.collect(filePath, output.encodeToByteArray())
+        collector.collect(outputPath, output.encodeToByteArray())
     }
 }
